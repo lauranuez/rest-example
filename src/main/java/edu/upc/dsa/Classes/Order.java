@@ -31,7 +31,7 @@ public class Order {
         return userName;
     }
     public String toString() {
-        return "Order [comprador= "+userName+ "]";
+        return "Order [comprador= "+ userName+ "lista de productos = " + productNames + "]";
     }
 
 }

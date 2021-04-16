@@ -3,6 +3,7 @@ package edu.upc.dsa.services;
 
 import edu.upc.dsa.Classes.Product;
 import edu.upc.dsa.Classes.User;
+import edu.upc.dsa.Classes.Order;
 import edu.upc.dsa.ProductManager;
 import edu.upc.dsa.ProductManagerimpl;
 import edu.upc.dsa.TracksManager;
@@ -28,25 +29,15 @@ public class OrdersService {
     private ProductManager pm;
 
     public OrdersService() {
-        this.tm = TracksManagerImpl.getInstance();
+
         this.pm = ProductManagerimpl.getInstance();
-        if (tm.size()==0) {
-            this.tm.addTrack("La Barbacoa", "Georgie Dann");
-            this.tm.addTrack("Despacito", "Luis Fonsi");
-            this.tm.addTrack("Enter Sandman", "Metallica");
-            this.tm.addTrack("Enter ", "Meta");
-        }
+
 
         Product product1 = new Product("coca", 2);
         Product product2 = new Product("pan", 1);
         Product product3 = new Product("bocadillo de lomo", 4);
         Product product4 = new Product("patatas", 3);
 
-
-        this.pm.addProduct(product1);
-        this.pm.addProduct(product2);
-        this.pm.addProduct(product3);
-        this.pm.addProduct(product4);
 
         pm.addProduct(product1);
         pm.addProduct(product2);
@@ -66,44 +57,79 @@ public class OrdersService {
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successful", response = Product.class, responseContainer="List"),
     })
-    @Path("/")
+    @Path("/prize")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTracks() {
+    public Response getProductsPrize() {
 
         List<Product> productList = this.pm.getProductByPrize();
+
+        GenericEntity<List<Product>> entity = new GenericEntity<List<Product>>(productList) {};
+        return Response.status(201).entity(entity).build();
+
+    }
+
+    @GET
+    @ApiOperation(value = "get products by sales", notes = "asdasd")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful", response = Product.class, responseContainer="List"),
+    })
+    @Path("/sales")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getProductsSales() {
+
+        List<Product> productList = this.pm.getProductBySales();
 
         GenericEntity<List<Product>> entity2 = new GenericEntity<List<Product>>(productList) {};
         return Response.status(201).entity(entity2).build();
 
     }
 
-    @GET
-    @ApiOperation(value = "get a Track", notes = "asdasd")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful", response = Track.class),
-            @ApiResponse(code = 404, message = "Track not found")
-    })
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getTrack(@PathParam("id") String id) {
-        Track t = this.tm.getTrack(id);
-        if (t == null) return Response.status(404).build();
-        else  return Response.status(201).entity(t).build();
-    }
-
     @DELETE
-    @ApiOperation(value = "delete a Track", notes = "asdasd")
+    @ApiOperation(value = "process order", notes = "asdasd")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successful"),
-            @ApiResponse(code = 404, message = "Track not found")
+            @ApiResponse(code = 404, message = "No orders to process!!")
     })
-    @Path("/{id}")
-    public Response deleteTrack(@PathParam("id") String id) {
-        Track t = this.tm.getTrack(id);
-        if (t == null) return Response.status(404).build();
-        else this.tm.deleteTrack(id);
+    @Path("/")
+    public Response ProcessOrder() {
+        Order o = pm.processOrder();
+        if (o == null) return Response.status(404).build();
+        else return Response.status(201).build();
+    }
+
+    @GET
+    @ApiOperation(value = "get orders by user", notes = "asdasd")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful", response = Order.class, responseContainer="List"),
+            @ApiResponse(code = 404, message = "User not found")
+    })
+    @Path("/{name}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTrack(@PathParam("name") String id) {
+        List<Order> listOrder = pm.getOrdersByUser(id);
+        if (listOrder == null) return Response.status(404).build();
+        else  return Response.status(201).entity(listOrder).build();
+    }
+
+
+    @POST
+    @ApiOperation(value = "create a new order", notes = "asdasd")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful", response=Order.class),
+            @ApiResponse(code = 500, message = "Validation Error")
+
+    })
+
+    @Path("/")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response newOrder(Order o) {
+
+        if (o.getUserName()==null)  return Response.status(500).entity(o).build();
+        this.pm.newOrder(o);
         return Response.status(201).build();
     }
+
+
 
     @PUT
     @ApiOperation(value = "update a Track", notes = "asdasd")
@@ -119,25 +145,6 @@ public class OrdersService {
         if (t == null) return Response.status(404).build();
 
         return Response.status(201).build();
-    }
-
-
-
-    @POST
-    @ApiOperation(value = "create a new Track", notes = "asdasd")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful", response=Track.class),
-            @ApiResponse(code = 500, message = "Validation Error")
-
-    })
-
-    @Path("/")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response newTrack(Track track) {
-
-        if (track.getSinger()==null || track.getTitle()==null)  return Response.status(500).entity(track).build();
-        this.tm.addTrack(track);
-        return Response.status(201).entity(track).build();
     }
 
 }
