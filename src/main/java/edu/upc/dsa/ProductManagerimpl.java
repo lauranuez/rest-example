@@ -34,10 +34,7 @@ public class ProductManagerimpl implements ProductManager {
        logger.info("new user added");
    }
 
-   public User getUser(String name){
 
-       return hmUsers.get(name);
-   }
 
    public Product getProduct(String name){
        return null;
@@ -50,6 +47,11 @@ public class ProductManagerimpl implements ProductManager {
        pendingOrder.clear();
 
    }
+
+    @Override
+    public User getUser(String userId) {
+        return hmUsers.get(userId);
+    }
 
     public static ProductManager getInstance() {
         if (instance==null) instance = new ProductManagerimpl();
@@ -83,18 +85,31 @@ public class ProductManagerimpl implements ProductManager {
             }
         });
         logger.info("the first product is: " + p.get(0).getName());
-
         return p;
     }
     @Override
     public List<Order> getOrdersByUser(String userId) {
+        logger.info("getOrdersbySale()");
+        if (hmUsers.get(userId)==null)
+        {
+            logger.warn("user"+ userId + "not found ");
+        }
+        else if(hmUsers.get(userId).getListOrdersDone()==null){
+            logger.warn("list empty: the user don't have made any order");
+        }
+        else if (hmUsers.get(userId).getListOrdersDone()!=null){
+            logger.info("the first order is: "+ hmUsers.get(userId).getListOrdersDone());
+        }
         return hmUsers.get(userId).getListOrdersDone();
+
     }
+
     @Override
     public void newOrder(Order o) {
+        logger.info("newOrder()");
         User user = hmUsers.get(o.getUserName());
         if (user == null)
-            System.out.println("usuari " + o.getUserName() + " no existeix");
+            logger.warn("user " + o.getUserName() + " not exists");
         user.addOrder(o);
         pendingOrder.add(o);
 
@@ -103,10 +118,12 @@ public class ProductManagerimpl implements ProductManager {
     }
     @Override
     public Order processOrder() {
+        logger.info("processOrder()");
         Order o = pendingOrder.remove();
+        logger.info("the order " + o.getId() + "has been processed" );
         User user = hmUsers.get(o.getUserName());
         user.addOrderDone(o);
-
+        logger.info("the order has been added to " + o.getUserName() + "order list" );
         List<String> p = o.getProductNames();
         for (int i = 0 ; i < p.size(); i++){
             for (int j = 0 ; j < listProduct.size(); j++){
@@ -114,12 +131,12 @@ public class ProductManagerimpl implements ProductManager {
                     listProduct.get(j).addSale();
             }
         }
-
         return o;
     }
     @Override
     public List<Product> getProductBySales() {
         List<Product> p = listProduct;
+        logger.info("getProductBySale()");
 
         /*
         int cont = 0;
@@ -142,7 +159,7 @@ public class ProductManagerimpl implements ProductManager {
                 return o2.getSales()-o1.getSales();
             }
         });
-
+        logger.info("the first product is: " + p.get(0).getName());
         return p;
     }
 }
