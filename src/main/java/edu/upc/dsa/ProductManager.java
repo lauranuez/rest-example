@@ -18,6 +18,7 @@ public interface ProductManager {
     //public User getUser(String userId);
     public void addProduct(Product p);
     public void addUser(User user);
-
+    public void dirty();
+    public boolean isDirty();
 
 }

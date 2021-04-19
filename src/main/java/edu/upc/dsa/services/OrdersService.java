@@ -7,7 +7,6 @@ import edu.upc.dsa.Classes.Order;
 import edu.upc.dsa.ProductManager;
 import edu.upc.dsa.ProductManagerimpl;
 import edu.upc.dsa.TracksManager;
-import edu.upc.dsa.TracksManagerImpl;
 import edu.upc.dsa.models.Track;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,24 +30,27 @@ public class OrdersService {
     public OrdersService() {
 
         this.pm = ProductManagerimpl.getInstance();
+        if (!this.pm.isDirty() ) {
+
+            Product product1 = new Product("coca", 2);
+            Product product2 = new Product("pan", 1);
+            Product product3 = new Product("bocadillo de lomo", 4);
+            Product product4 = new Product("patatas", 3);
 
 
-        Product product1 = new Product("coca", 2);
-        Product product2 = new Product("pan", 1);
-        Product product3 = new Product("bocadillo de lomo", 4);
-        Product product4 = new Product("patatas", 3);
+            pm.addProduct(product1);
+            pm.addProduct(product2);
+            pm.addProduct(product3);
+            pm.addProduct(product4);
 
+            User user = new User("Juan");
+            User user2 = new User("Maria");
 
-        pm.addProduct(product1);
-        pm.addProduct(product2);
-        pm.addProduct(product3);
-        pm.addProduct(product4);
+            pm.addUser(user);
+            pm.addUser(user2);
+            pm.dirty();
+        }
 
-        User user = new User("Juan");
-        User user2 = new User("Maria");
-
-        pm.addUser(user);
-        pm.addUser(user2);
 
     }
 
@@ -103,12 +105,16 @@ public class OrdersService {
             @ApiResponse(code = 201, message = "Successful", response = Order.class, responseContainer="List"),
             @ApiResponse(code = 404, message = "User not found")
     })
-    @Path("/{name}")
+    @Path("/user/{name}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTrack(@PathParam("name") String id) {
+    public Response getOrderByUser(@PathParam("name") String id) {
         List<Order> listOrder = pm.getOrdersByUser(id);
+
         if (listOrder == null) return Response.status(404).build();
-        else  return Response.status(201).entity(listOrder).build();
+        else {
+            GenericEntity<List<Order>> entity = new GenericEntity<List<Order>>(listOrder) {};
+            return Response.status(201).entity(entity).build();
+        }
     }
 
 

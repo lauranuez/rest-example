@@ -6,23 +6,30 @@ import java.util.List;
 public class User {
 
     private String userId;
-    private List <Order> listOrders = new ArrayList<Order>();
     private List <Order> listOrdersDone= new ArrayList<Order>();
+    public User()
+    {
+
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public User(String name)
     {
         this.userId=name;
     }
 
-    public void addOrder(Order order) {
-        listOrders.add(order);
-    }
+
     public void addOrderDone(Order order) {
         listOrdersDone.add(order);
     }
 
-    public List<Order> getListOrders() {return listOrders; }
-    public void setListOrders(List<Order> listOrders) {this.listOrders = listOrders; }
     public String getId() {return userId;}
     public void setId(String userId) {this.userId = userId;}
     public List<Order> getListOrdersDone() {return listOrdersDone; }

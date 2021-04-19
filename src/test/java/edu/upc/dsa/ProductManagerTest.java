@@ -3,8 +3,6 @@ package edu.upc.dsa;
 import edu.upc.dsa.Classes.Order;
 import edu.upc.dsa.Classes.Product;
 import edu.upc.dsa.Classes.User;
-import edu.upc.dsa.ProductManager;
-import edu.upc.dsa.ProductManagerimpl;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

@@ -13,7 +13,8 @@ public class ProductManagerimpl implements ProductManager {
     private List<Product> listProduct;
     private HashMap<String, User > hmUsers;
     private int cont = 0;
-    final static Logger logger = Logger.getLogger(TracksManagerImpl.class);
+    final static Logger logger = Logger.getLogger(ProductManagerimpl.class);
+    private boolean dirty=false;
 
     private static ProductManager instance;
 
@@ -34,7 +35,16 @@ public class ProductManagerimpl implements ProductManager {
        logger.info("new user added");
    }
 
-   public void clear(){
+    @Override
+    public void dirty() {
+        this.dirty = true;
+    }
+
+    public boolean isDirty(){
+       return dirty;
+    }
+
+    public void clear(){
 
        listProduct.clear();
        hmUsers.clear();
@@ -48,7 +58,11 @@ public class ProductManagerimpl implements ProductManager {
     }
 */
     public static ProductManager getInstance() {
-        if (instance==null) instance = new ProductManagerimpl();
+        if (instance==null)
+        {
+            instance = new ProductManagerimpl();
+        }
+
         return instance;
     }
 
@@ -83,7 +97,7 @@ public class ProductManagerimpl implements ProductManager {
     }
     @Override
     public List<Order> getOrdersByUser(String userId) {
-        logger.info("getOrdersbySale()");
+        logger.info("getOrdersbyUser()");
         if (hmUsers.get(userId)==null)
         {
             logger.warn("user"+ userId + "not found ");
@@ -94,6 +108,8 @@ public class ProductManagerimpl implements ProductManager {
         else if (hmUsers.get(userId).getListOrdersDone()!=null){
             logger.info("the first order is: "+ hmUsers.get(userId).getListOrdersDone().get(0).getId());
         }
+        else
+            logger.warn("Ninguna de las opciones");
 
         return hmUsers.get(userId).getListOrdersDone();
 
@@ -103,7 +119,7 @@ public class ProductManagerimpl implements ProductManager {
     public void newOrder(Order o) {
         logger.info("newOrder()");
         User user = hmUsers.get(o.getUserName());;
-        user.addOrder(o);
+        //user.addOrder(o);
         pendingOrder.add(o);
         o.setId(cont);
         cont++;

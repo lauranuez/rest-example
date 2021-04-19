@@ -7,6 +7,10 @@ public class Product {
     private float price;
     private int sales = 0;
 
+    public Product() {
+
+    }
+
     public Product(String name, float price) {
         this.name = name;
         this.price = price;
@@ -31,6 +35,7 @@ public class Product {
     public String getName() {
         return name;
     }
+    public void setName(String name) { this.name = name; }
     public String toString() {
         return "Product [name="+name+", price=" + price + ", sales=" + sales +"]";
     }

@@ -9,6 +9,11 @@ public class Order {
     private String userName;
     private int id = 0;
 
+    public Order()
+    {
+
+    }
+
     public Order(String user)
     {
         this.userName = user;
@@ -30,6 +35,11 @@ public class Order {
     public String getUserName() {
         return userName;
     }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public String toString() {
         return "Order [comprador= "+ userName+ "lista de productos = " + productNames + "]";
     }
