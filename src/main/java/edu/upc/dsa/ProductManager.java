@@ -15,8 +15,7 @@ public interface ProductManager {
     public Order processOrder();
     public List<Product> getProductBySales();
     public void clear();
-    public User getUser(String userId);
-    public Product getProduct(String productName);
+    //public User getUser(String userId);
     public void addProduct(Product p);
     public void addUser(User user);
 

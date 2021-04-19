@@ -34,12 +34,6 @@ public class ProductManagerimpl implements ProductManager {
        logger.info("new user added");
    }
 
-
-
-   public Product getProduct(String name){
-       return null;
-   }
-
    public void clear(){
 
        listProduct.clear();
@@ -47,12 +41,12 @@ public class ProductManagerimpl implements ProductManager {
        pendingOrder.clear();
 
    }
-
+/*
     @Override
     public User getUser(String userId) {
         return hmUsers.get(userId);
     }
-
+*/
     public static ProductManager getInstance() {
         if (instance==null) instance = new ProductManagerimpl();
         return instance;
@@ -98,8 +92,9 @@ public class ProductManagerimpl implements ProductManager {
             logger.warn("list empty: the user don't have made any order");
         }
         else if (hmUsers.get(userId).getListOrdersDone()!=null){
-            logger.info("the first order is: "+ hmUsers.get(userId).getListOrdersDone());
+            logger.info("the first order is: "+ hmUsers.get(userId).getListOrdersDone().get(0).getId());
         }
+
         return hmUsers.get(userId).getListOrdersDone();
 
     }
@@ -107,14 +102,12 @@ public class ProductManagerimpl implements ProductManager {
     @Override
     public void newOrder(Order o) {
         logger.info("newOrder()");
-        User user = hmUsers.get(o.getUserName());
-        if (user == null)
-            logger.warn("user " + o.getUserName() + " not exists");
+        User user = hmUsers.get(o.getUserName());;
         user.addOrder(o);
         pendingOrder.add(o);
-
         o.setId(cont);
         cont++;
+        logger.info("order added");
     }
     @Override
     public Order processOrder() {
